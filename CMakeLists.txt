@@ -78,7 +78,8 @@ add_compile_definitions(JUCE_PROJECT_NAME="${PROJECT_NAME}")
 add_library(SharedCode INTERFACE
         source/Parameters.h
         source/Includes.h
-        source/Converters.h)
+        source/Converters.h
+        source/Smoother.h)
 
 # Set compile features for SharedCode
 target_compile_features(SharedCode INTERFACE cxx_std_20)
