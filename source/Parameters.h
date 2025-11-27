@@ -30,65 +30,61 @@ namespace MarsDSP {
             // Input
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (inputParamID, inputParamIDName, juce::NormalisableRange<float>
-                    { -12.0f, 12.0f }, 0.0f,
-                juce::AudioParameterFloatAttributes()
-                .withStringFromValueFunction(Converter::stringFromDecibels)));
+                    { 0.0f, 1.0f }, 0.5f));
 
             // Tilt
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (tiltParamID, tiltParamIDName, juce::NormalisableRange<float>
-                    {0.0f, 100.0f, 1.0f}, 0.0f,
+                    {0.0f, 1.0f}, 0.5f,
                 juce::AudioParameterFloatAttributes()
                 .withStringFromValueFunction(Converter::stringFromPercent)));
 
             // Shape
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (shapeParamID, shapeParamIDName, juce::NormalisableRange<float>
-                    {0.0f, 100.0f, 1.0f}, 0.0f,
+                    {0.0f, 1.0f}, 0.5f,
                 juce::AudioParameterFloatAttributes()
                 .withStringFromValueFunction(Converter::stringFromPercent)));
 
             // Bias
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (biasParamID, biasParamIDName, juce::NormalisableRange<float>
-                    {0.0f, 100.0f, 1.0f}, 50.0f,
+                    {0.0f, 1.0f}, 0.5f,
                 juce::AudioParameterFloatAttributes()
                 .withStringFromValueFunction(Converter::stringFromPercent)));
 
             // Flutter
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (flutterParamID, flutterParamIDName, juce::NormalisableRange<float>
-                    {0.0f, 100.0f, 1.0f}, 50.0f,
+                    {0.0f, 1.0f}, 0.5f,
                 juce::AudioParameterFloatAttributes()
                 .withStringFromValueFunction(Converter::stringFromPercent)));
 
             // Flutter Speed
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (fSpeedParamID, fSpeedParamIDName, juce::NormalisableRange<float>
-                    {0.0f, 100.0f, 1.0f}, 50.0f,
+                    {0.0f, 1.0f}, 0.5f,
                 juce::AudioParameterFloatAttributes()
                 .withStringFromValueFunction(Converter::stringFromPercent)));
 
             // Bump Head
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (bumpParamID, bumpParamIDName, juce::NormalisableRange<float>
-                    {0.0f, 100.0f, 1.0f}, 50.0f,
+                    {0.0f, 1.0f}, 0.5f,
                 juce::AudioParameterFloatAttributes()
                 .withStringFromValueFunction(Converter::stringFromPercent)));
 
             // BumpHz
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (bumpHzParamID, bumpHzParamIDName, juce::NormalisableRange<float>
-                    {0.0f, 100.0f, 1.0f}, 50.0f,
+                    {1.0f, 150.0f}, 75.0f,
                 juce::AudioParameterFloatAttributes()
-                .withStringFromValueFunction(Converter::stringFromPercent)));
+                .withStringFromValueFunction(Converter::stringFromHz)));
 
             // Output
             layout.add(std::make_unique<juce::AudioParameterFloat>
                 (outputParamID, outputParamIDName, juce::NormalisableRange<float>
-                    { -12.0f, 12.0f }, 0.0f,
-                juce::AudioParameterFloatAttributes()
-                .withStringFromValueFunction(Converter::stringFromDecibels)));
+                    { 0.0f, 1.0f }, 0.5f));
 
             // Bypass
             layout.add(std::make_unique<juce::AudioParameterBool>

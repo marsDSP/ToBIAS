@@ -75,9 +75,20 @@ void PluginProcessor::changeProgramName(int index, const juce::String &newName)
     juce::ignoreUnused(index, newName);
 }
 
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    juce::ignoreUnused(parameterID, newValue);
+}
+
+void PluginProcessor::updateParameters()
+{
+    
+}
+
 void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-    juce::ignoreUnused(sampleRate, samplesPerBlock);
+    processDSP.prepareDSP(sampleRate, static_cast<juce::uint32>(samplesPerBlock),
+                static_cast<juce::uint32>(getTotalNumOutputChannels()), params);
 }
 
 void PluginProcessor::releaseResources()
@@ -110,6 +121,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float> &buffer,
                                    juce::MidiBuffer &midiMessages)
 {
     juce::ignoreUnused(midiMessages);
+    processDSP.process(buffer);
 }
 
 //==============================================================================
