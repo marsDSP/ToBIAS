@@ -67,7 +67,7 @@ namespace MarsDSP
 
         static juce::String stringFromPercent(float value, int)
         {
-            return juce::String(static_cast<int>(value)) + "%";
+            return juce::String(static_cast<int>(value * 100.0f)) + "%";
         }
 
     private:

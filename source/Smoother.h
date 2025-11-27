@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Parameters.h"
+#include <Includes.h>
 
 namespace MarsDSP
 {
+    template <typename ParametersType>
     class Smoother
     {
     public:
-        explicit Smoother(const Parameters& p) : params(p) {}
+        explicit Smoother(const ParametersType& p) : params(p) {}
 
         void prepare(const juce::dsp::ProcessSpec& spec) noexcept
         {
@@ -33,84 +34,80 @@ namespace MarsDSP
         void reset() noexcept
         {
             input = 0.0f;
-            const auto inGainVal = juce::Decibels::decibelsToGain(params.input->get());
             for (auto& smoother : inputSmoother)
-                smoother.setCurrentAndTargetValue(inGainVal);
+                smoother.setCurrentAndTargetValue(params.input->get());
 
             tilt = 0.0f;
             for (auto& smoother : tiltSmoother)
-                smoother.setCurrentAndTargetValue(params.tilt->get() * 0.01f);
+                smoother.setCurrentAndTargetValue(params.tilt->get());
 
             shape = 0.0f;
             for (auto& smoother : shapeSmoother)
-                smoother.setCurrentAndTargetValue(params.shape->get()); // milliseconds
+                smoother.setCurrentAndTargetValue(params.shape->get());
 
             bias = 1.0f;
             for (auto& smoother : biasSmoother)
-                smoother.setCurrentAndTargetValue(params.bias->get() * 0.01f);
+                smoother.setCurrentAndTargetValue(params.bias->get());
 
             flutter = 0.0f;
             for (auto& smoother : flutterSmoother)
-                smoother.setCurrentAndTargetValue(params.flutter->get() * 0.01f);
+                smoother.setCurrentAndTargetValue(params.flutter->get());
 
             speed = 0.0f;
             for (auto& smoother : speedSmoother)
-                smoother.setCurrentAndTargetValue(params.speed->get() * 0.01f);
+                smoother.setCurrentAndTargetValue(params.speed->get());
 
             bumpHead = 0.0f;
             for (auto& smoother : bumpHeadSmoother)
-                smoother.setCurrentAndTargetValue(params.bumpHead->get() * 0.01f);
+                smoother.setCurrentAndTargetValue(params.bumpHead->get());
 
             bumpHz = 0.0f;
             for (auto& smoother : bumpHzSmoother)
-                smoother.setCurrentAndTargetValue(params.bumpHz->get() * 0.01f);
+                smoother.setCurrentAndTargetValue(params.bumpHz->get());
 
             output = 0.0f;
-            const auto outGainVal = juce::Decibels::decibelsToGain(params.output->get());
             for (auto& smoother : outputSmoother)
-                smoother.setCurrentAndTargetValue(outGainVal);
+                smoother.setCurrentAndTargetValue(params.output->get());
 
         }
 
         void update() noexcept
         {
             const float inGain = params.input->get();
-            const float inGainDB = juce::Decibels::decibelsToGain(inGain);
             for (auto& smoother : inputSmoother)
-                smoother.setTargetValue(inGainDB);
+                smoother.setTargetValue(inGain);
 
-            const float newTilt = params.tilt->get() * 0.01f;
+            const float newTilt = params.tilt->get();
             for (auto& smoother : tiltSmoother)
                 smoother.setTargetValue(newTilt);
 
-            const float newShape = params.shape->get() * 0.01f;
+            const float newShape = params.shape->get();
             for (auto& smoother : shapeSmoother)
                 smoother.setTargetValue(newShape);
 
-            const float newBias = params.bias->get() * 0.01f;
+            const float newBias = params.bias->get();
             for (auto& smoother : biasSmoother)
                 smoother.setTargetValue(newBias);
 
-            const float newFlutter = params.flutter->get() * 0.01f;
+            const float newFlutter = params.flutter->get();
             for (auto& smoother : flutterSmoother)
                 smoother.setTargetValue(newFlutter);
 
-            const float newFlutterSpeed = params.speed->get() * 0.01f;
+            const float newFlutterSpeed = params.speed->get();
             for (auto& smoother : speedSmoother)
                 smoother.setTargetValue(newFlutterSpeed);
 
-            const float newBumpHead = params.bumpHead->get() * 0.01f;
+            const float newBumpHead = params.bumpHead->get();
             for (auto& smoother : bumpHeadSmoother)
                 smoother.setTargetValue(newBumpHead);
 
-            const float newBumpHz = params.bumpHz->get() * 0.01f;
+            const float newBumpHz = params.bumpHz->get();
             for (auto& smoother : bumpHzSmoother)
                 smoother.setTargetValue(newBumpHz);
 
             const float outGain = params.output->get();
-            const float outGainDB = juce::Decibels::decibelsToGain(outGain);
             for (auto& smoother : outputSmoother)
-                smoother.setTargetValue(outGainDB);
+                smoother.setTargetValue(outGain);
 
             isBypassed = params.bypass->get();
         }
@@ -134,18 +131,6 @@ namespace MarsDSP
             smoothen(outputSmoother);
         }
 
-        std::vector<std::array<juce::LinearSmoothedValue<float>, 2>*> getSmoother() noexcept
-        {
-            return { &inputSmoother,
-                     &tiltSmoother,
-                     &shapeSmoother,
-                     &biasSmoother,
-                     &flutterSmoother,
-                     &speedSmoother,
-                     &bumpHeadSmoother,
-                     &bumpHzSmoother,
-                     &outputSmoother };
-        }
 
         enum class SmootherUpdateMode
         {
@@ -174,36 +159,47 @@ namespace MarsDSP
             skipArray(outputSmoother);
         }
 
+        // A
         float getInput(size_t channel = 0) noexcept
         { return inputSmoother[channel].getNextValue(); }
 
+        // B
         float getTilt(size_t channel = 0) noexcept
         { return tiltSmoother[channel].getNextValue(); }
 
+        // C
         float getShape(size_t channel = 0) noexcept
         { return shapeSmoother[channel].getNextValue(); }
 
+        // D
         float getBias(size_t channel = 0) noexcept
         { return biasSmoother[channel].getNextValue(); }
 
+        // E
         float getFlutter(size_t channel = 0) noexcept
         { return flutterSmoother[channel].getNextValue(); }
 
+        // F
         float getFlutterSpeed(size_t channel = 0) noexcept
         { return speedSmoother[channel].getNextValue(); }
 
+        // G
         float getBumpHead(size_t channel = 0) noexcept
         { return bumpHeadSmoother[channel].getNextValue(); }
 
+        // H
         float getBumpHz(size_t channel = 0) noexcept
         { return bumpHzSmoother[channel].getNextValue(); }
 
+        // I
         float getOutput(size_t channel = 0) noexcept
         { return outputSmoother[channel].getNextValue(); }
 
+        bool getBypass() const noexcept { return isBypassed; }
+
     private:
 
-        const Parameters& params;
+        const ParametersType& params;
 
         float input    { 0.0f };
         float tilt     { 0.0f };
@@ -218,7 +214,6 @@ namespace MarsDSP
         bool isBypassed  { false };
 
         std::array<juce::LinearSmoothedValue<float>, 2>
-
         inputSmoother,
         tiltSmoother,
         shapeSmoother,

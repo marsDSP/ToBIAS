@@ -2,6 +2,9 @@
   <dictionary name="project">
     <words>
       <w>bumphz</w>
+      <w>gslew</w>
+      <w>overallscale</w>
+      <w>underbias</w>
     </words>
   </dictionary>
 </component>
